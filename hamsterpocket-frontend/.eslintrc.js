@@ -1,0 +1,37 @@
+module.exports = {
+  extends: [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+  ],
+  plugins: ["react", "@typescript-eslint"],
+  env: {
+    browser: true,
+    es6: true,
+    jest: true,
+  },
+  parser: "@typescript-eslint/parser",
+  rules: {
+    "prettier/prettier": "error",
+    "@typescript-eslint/no-empty-function": "warn",
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/no-var-requires": "off",
+  },
+  ignorePatterns: [
+    ".storybook",
+    "**/*.stories.*",
+    "node_modules",
+    "node_modules/framer-motion/dist/index.d.ts",
+    "node_modules/@wagmi/core/dist/getContract-2443b222.d.ts",
+    "**/*.d.ts",
+    "client/dist/",
+    "node_modules/*",
+    "node_modules/@wagmi/*",
+    "node_modules/wagmi/*",
+    "node_module/abitype/d/*",
+    "./src/providers/program/evm/typechain-types",
+    "./src/providers/program/evm/artifacts",
+  ],
+};
