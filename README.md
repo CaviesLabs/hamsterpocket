@@ -49,7 +49,7 @@
 
 ![Hero image](https://files.slack.com/files-pri/T03N86YEZ6Z-F04TQLW6JCU/heroimage.png?pub_secret=014779ae87)
 
-HamsterPocket is an Open Source self-managed dollar-cost-averaging (DCA) protocol that lets users create and run their own saving pools ("pockets") that will automatically execute the chosen strategies over time. Built on Solana with support for multiple blockchains, HamsterPocket provides a complete DeFi infrastructure for automated investment strategies.
+HamsterPocket is an Open Source self-managed dollar-cost-averaging (DCA) protocol that lets users create and run their own saving pools ("pockets") that will automatically execute the chosen strategies over time. Built natively on Solana with comprehensive EVM chain support, HamsterPocket provides a complete multi-chain DeFi infrastructure for automated investment strategies.
 
 ## **What we deliver out-of-the-box** 📦
 
@@ -63,13 +63,13 @@ HamsterPocket is an Open Source self-managed dollar-cost-averaging (DCA) protoco
 - Run a TWAP (Time-Weighted Average Price) strategy on-chain
 - Create a simple saving pool for one or multiple assets  
 - Set-and-forget vaults for medium or long-term spot purchases  
-✅ **Multi-chain Support** - Solana, Ethereum, and Aptos integration  
+✅ **Multi-chain Support** - Solana native with full EVM compatibility (Ethereum, BNB Chain, Avalanche, Klaytn, Mantle, Scroll)  
 ✅ **Automated Execution** - Smart contracts handle strategy execution automatically  
 ✅ **Risk Management** - Built-in price conditions and stop-loss mechanisms  
 
 ## **Architecture Overview** 🏗️
 
-This monorepo contains three main components that work together to provide a complete DCA solution:
+This monorepo contains four main components that work together to provide a complete multi-chain DCA solution:
 
 ### **hamsterpocket-program** 🦀
 - **Solana smart contracts** written in Rust using the Anchor framework
@@ -77,24 +77,35 @@ This monorepo contains three main components that work together to provide a com
 - Deployed on Solana mainnet: `BW5RwMCPY85ch6efYE3Ev43ZQpJytvvjSNbJ2beC9MzV`
 - Features: TWAP execution, price conditions, multi-token support
 
+### **hamsterpocket-evm-program** 🔷
+- **EVM smart contracts** written in Solidity using Hardhat framework
+- Cross-chain DCA functionality for Ethereum and EVM-compatible chains
+- Supports major DEX protocols (Uniswap V2/V3, PancakeSwap, SushiSwap, etc.)
+- Multi-chain deployment: Ethereum, BNB Chain, Avalanche, Klaytn, Mantle, Scroll
+- Features: PocketVault management, PocketChef execution, cross-chain registry
+
 ### **hamsterpocket-backend** ⚙️
 - **NestJS-based API server** for data aggregation and cross-chain support
-- Real-time market data integration with DEX protocols
+- Real-time market data integration with DEX protocols across all chains
 - User management, analytics, and notification systems
 - Multi-chain pocket synchronization and execution monitoring
+- Unified API for both Solana and EVM chains
 
 ### **hamsterpocket-frontend** 🖥️
-- **Next.js React application** with intuitive DCA management interface
-- Wallet integration across multiple chains (Phantom, MetaMask, Petra, etc.)
-- Portfolio dashboard with detailed analytics and performance tracking
-- Mobile-responsive design for managing pockets on any device
+- **Next.js React application** with intuitive multi-chain DCA management interface
+- Wallet integration across all supported chains (Phantom, MetaMask, WalletConnect, etc.)
+- Portfolio dashboard with detailed analytics and cross-chain performance tracking
+- Mobile-responsive design for managing pockets across any supported blockchain
 
 ## **Our Tech Stack** 🛠
 
 **Smart Contracts & Blockchain**
-- [Rust](https://rustup.rs/) - Systems programming language for smart contracts
+- [Rust](https://rustup.rs/) - Systems programming language for Solana smart contracts
+- [Solidity](https://soliditylang.org/) - Smart contract language for EVM chains
 - [Anchor](https://anchor-lang.com/) - Solana development framework
+- [Hardhat](https://hardhat.org/) - Ethereum development environment
 - [Solana](https://solana.com/) - High-performance blockchain
+- [OpenZeppelin](https://openzeppelin.com/) - Secure smart contract library
 
 **Backend Services**
 - [Node.js](https://nodejs.org/) - Runtime environment
@@ -121,9 +132,10 @@ This monorepo contains three main components that work together to provide a com
 Make sure you have the following installed:
 - [Node.js](https://nodejs.org/) (v20 or higher)
 - [Yarn](https://yarnpkg.com/) package manager
-- [Rust](https://rustup.rs/) (for smart contract development)
+- [Rust](https://rustup.rs/) (for Solana smart contract development)
 - [Solana CLI](https://docs.solana.com/cli/install-solana-cli-tools)
 - [Anchor CLI](https://book.anchor-lang.com/getting_started/installation.html) (v0.30.1)
+- [Hardhat](https://hardhat.org/) (for EVM smart contract development)
 
 ### **Step 1: Clone the Repository** 🧰
 
@@ -142,6 +154,7 @@ yarn install
 cd hamsterpocket-frontend && yarn install
 cd ../hamsterpocket-backend && yarn install  
 cd ../hamsterpocket-program && yarn install
+cd ../hamsterpocket-evm-program && yarn install
 ```
 
 > HamsterPocket supports only **Yarn** package manager. If you don't have it installed, please follow the [official Yarn installation guide](https://yarnpkg.com/getting-started/install).
@@ -164,8 +177,14 @@ cp example.config.json config.json
 
 **Program Configuration:**
 ```bash
+# Solana Program
 cd hamsterpocket-program
 # Configure Anchor.toml for your deployment target
+
+# EVM Program
+cd hamsterpocket-evm-program
+cp .env.example .env
+# Edit .env with your RPC URLs and private keys for deployment
 ```
 
 Please contact [khang@cavies.xyz](mailto:khang@cavies.xyz) or [dev@cavies.xyz](mailto:dev@cavies.xyz) for any configuration inquiries.
@@ -186,12 +205,23 @@ yarn dev:dev-env
 
 **Test Smart Contracts:**
 ```bash
+# Solana Program Testing
 # Start local Solana validator
 solana-test-validator --no-bpf-jit --reset
 
-# Run tests
+# Run Solana tests
 cd hamsterpocket-program
 anchor test --skip-local-validator
+
+# EVM Program Testing  
+cd hamsterpocket-evm-program
+# Test all supported chains
+yarn test              # Default Hardhat network
+yarn test:klaytn       # Klaytn testnet fork
+yarn test:bnb          # BNB Chain testnet fork
+yarn test:avax         # Avalanche testnet fork
+yarn test:mantle       # Mantle testnet fork
+yarn test:scroll_sepolia # Scroll Sepolia testnet fork
 ```
 
 ### **Step 5: Access the Application** 🌐
@@ -202,17 +232,20 @@ anchor test --skip-local-validator
 
 ## **Deployed Contract Addresses** 📜
 
-| Network | Program ID |
-|---------|------------|
-| **Mainnet** | `BW5RwMCPY85ch6efYE3Ev43ZQpJytvvjSNbJ2beC9MzV` |
-| **Devnet** | `BW5RwMCPY85ch6efYE3Ev43ZQpJytvvjSNbJ2beC9MzV` |
+### **Deployed Contracts addresses** 📢
+
+| Chain          | PocketChef                                 | PocketRegistry                             | PocketVault                                | Multicall3                                 | 
+|----------------|--------------------------------------------|--------------------------------------------|--------------------------------------------|--------------------------------------------| 
+| BNB Chain      | 0x94eC37b16D48Ca4974d589cEF3F6F5964997F4DF | 0xf0C82C47B95143e14633A7EA9B5849fE7Ea9F8dA | 0xA78c8Da9e3Bac9B790d109Cf9023B3b6dB72b0E0 | 0x83Cb92492667a8334381c95A02007c8bF0811b89 | 
+
+> Contract addresses will be updated upon mainnet deployment
 
 **External APIs:**
 - Raydium markets: https://api.raydium.io/v2/sdk/liquidity/mainnet.json
 
 ## **Testing** 🧪
 
-### **Smart Contract Testing**
+### **Solana Smart Contract Testing**
 ```bash
 cd hamsterpocket-program
 anchor test --skip-local-validator
@@ -234,6 +267,22 @@ anchor test --skip-local-validator
 #    ✔ [withdraw] should: owner can withdraw assets from pocket successfully
 ```
 
+### **EVM Smart Contract Testing**
+```bash
+cd hamsterpocket-evm-program
+
+# Test on different chains
+yarn test              # Hardhat local network
+yarn test:klaytn       # Klaytn fork testing
+yarn test:bnb          # BNB Chain fork testing  
+yarn test:avax         # Avalanche fork testing
+yarn test:mantle       # Mantle fork testing
+yarn test:scroll_sepolia # Scroll Sepolia fork testing
+
+# Coverage testing
+yarn test:coverage
+```
+
 ### **Backend Testing**
 ```bash
 cd hamsterpocket-backend
@@ -250,7 +299,9 @@ yarn test:e2e
 
 ## **Deployment** 🚀
 
-### **Smart Contract Deployment**
+## **Deployment** 🚀
+
+### **Solana Smart Contract Deployment**
 ```bash
 cd hamsterpocket-program
 
@@ -261,6 +312,25 @@ solana address -k target/deploy/pocket-keypair.json
 # Deploy to mainnet
 anchor deploy --program-name pocket --provider.cluster mainnet-beta \
 --provider.wallet ~/.config/solana/id.json
+```
+
+### **EVM Smart Contract Deployment**
+```bash
+cd hamsterpocket-evm-program
+
+# Configure your .env file with RPC URLs and private keys
+# Deploy to specific networks (requires proper .env configuration)
+
+# Example deployment commands:
+npx hardhat run scripts/deploy.ts --network ethereum
+npx hardhat run scripts/deploy.ts --network bnb
+npx hardhat run scripts/deploy.ts --network avalanche
+npx hardhat run scripts/deploy.ts --network klaytn
+npx hardhat run scripts/deploy.ts --network mantle
+npx hardhat run scripts/deploy.ts --network scroll
+
+# Verify contracts on block explorers
+npx hardhat verify --network ethereum <CONTRACT_ADDRESS>
 ```
 
 ### **Backend Deployment**
@@ -288,6 +358,7 @@ yarn start
 - [hamsterpocket-backend](https://github.com/CaviesLabs/hamsterpocket-backend) - Backend API server
 - [hamsterpocket-frontend](https://github.com/CaviesLabs/hamsterpocket-frontend) - Frontend DApp
 - [hamsterpocket-program](https://github.com/CaviesLabs/hamsterpocket-program) - Solana smart contracts
+- [hamsterpocket-evm-program](https://github.com/CaviesLabs/hamsterpocket-evm-program) - EVM smart contracts
 
 ## **Contributing** 🤝
 
@@ -318,10 +389,11 @@ Security is our top priority. Our smart contracts have been audited and tested e
 
 ## **Roadmap** 🗺️
 
-- [ ] **Q1 2025**: Advanced DCA strategies (buy the dip, take profit)
-- [ ] **Q2 2025**: Cross-chain pocket management expansion
-- [ ] **Q3 2025**: Social trading and strategy sharing
-- [ ] **Q4 2025**: Mobile application with push notifications
+- [x] **Q4 2024**: EVM smart contract development and multi-chain support
+- [ ] **Q1 2025**: Mainnet deployment across all supported EVM chains
+- [ ] **Q2 2025**: Advanced DCA strategies (buy the dip, take profit conditions)
+- [ ] **Q3 2025**: Cross-chain portfolio management and unified dashboard
+- [ ] **Q4 2025**: Social trading, strategy sharing, and mobile application
 
 ## **Community** 👥
 
