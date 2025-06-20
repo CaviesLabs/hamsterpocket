@@ -124,7 +124,7 @@ const Footer: FC = () => {
             </ul>
             <div className="bottom-menu-wrapper hidden md:block">
               <p className="text-footerItemColor dark:text-footerItemColorDark text-[12px] md:text-[14px] regular-text">
-                © 2022 Cavies Ltd.
+                © 2025 Cavies Ltd.
               </p>
             </div>
           </div>
@@ -148,7 +148,7 @@ const Footer: FC = () => {
           </div>
           <div className="pt-[20px]">
             <p className="text-footerItemColor dark:text-footerItemColorDark text-[12px] md:text-[14px] cursor-pointer normal-text text-center">
-              © 2022 Cavies Ltd.
+              © 2025 Cavies Ltd.
             </p>
           </div>
         </div>
