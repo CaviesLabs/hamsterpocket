@@ -13,7 +13,6 @@ import { PURPLE_HEADER_PAGES } from "@/src/utils";
 import { useAppWallet } from "@/src/hooks/useAppWallet";
 import { ChainId } from "@/src/entities/platform-config.entity";
 import UserProfile from "@/src/components/header/user-profile";
-import { useAptosWallet } from "@/src/hooks/useAptos";
 
 const Header: FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -29,7 +28,6 @@ const Header: FC = () => {
   /**
    * @dev Import GoGi providers.
    */
-  const { connect: connectAptos } = useAptosWallet();
   const { connect: connectWallet } = useWalletKit();
   const { walletAddress } = useAppWallet();
 
@@ -39,10 +37,8 @@ const Header: FC = () => {
   const handleConnect = useCallback(() => {
     if (chainId === ChainId.sol) {
       connectWallet();
-    } else if (chainId.toLowerCase().includes("aptos")) {
-      connectAptos();
     }
-  }, [chainId, connectWallet, connectAptos]);
+  }, [chainId, connectWallet]);
 
   /**
    * @description

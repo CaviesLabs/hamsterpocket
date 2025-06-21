@@ -14,7 +14,6 @@ import { useAppWallet } from "@/src/hooks/useAppWallet";
 import { usePlatformConfig } from "@/src/hooks/usePlatformConfig";
 import { ChainId } from "@/src/entities/platform-config.entity";
 import { useWhiteList } from "@/src/hooks/useWhitelist";
-import { useAptosWallet } from "@/src/hooks/useAptos";
 
 type LayoutProps = {
   data: StatisticEntity;
@@ -29,17 +28,11 @@ const Layout = (props: LayoutProps) => {
   const { walletAddress } = useAppWallet();
   const { chainId, pushRouterWithChainId } = usePlatformConfig();
   const { connect: connectWallet } = useWalletKit();
-  const { connect: connectAptos } = useAptosWallet();
   const { analyzeDecimals } = useWhiteList();
 
   const handleCreatePocket = useCallback(
     (openModalEvm: () => void) => {
       if (!walletAddress) {
-        if (chainId === ChainId.aptos) {
-          connectAptos();
-          return;
-        }
-
         if (chainId === ChainId.sol) {
           connectWallet();
           return;

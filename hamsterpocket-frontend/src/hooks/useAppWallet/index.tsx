@@ -12,10 +12,8 @@ import { AppWalletContextState } from "./types";
 import { ChainId } from "@/src/entities/platform-config.entity";
 import { usePlatformConfig } from "@/src/hooks/usePlatformConfig";
 import { useConnectedWallet as useSolWallet } from "@saberhq/use-solana";
-import { useWallet as usePontem } from "@pontem/aptos-wallet-adapter";
 
 import { useWallet } from "@/src/hooks/useWallet";
-import { useAptosWallet } from "@/src/hooks/useAptos";
 import { useEvmWallet } from "@/src/hooks/useEvmWallet";
 
 /** @dev Initialize context. */
@@ -32,7 +30,6 @@ export const AppWalletProvider: FC<{ children: ReactNode }> = (props) => {
 
   const { solBalance } = useWallet();
   const { nativeBalance: evmBalance } = useEvmWallet();
-  const { balance: aptosBalance } = useAptosWallet();
 
   /**
    * @dev Inject context of solana wallet.
@@ -47,7 +44,7 @@ export const AppWalletProvider: FC<{ children: ReactNode }> = (props) => {
   /**
    * @dev Inject context of aptos wallet.
    */
-  const aptosWallet = usePontem();
+  // const aptosWallet = usePontem();
 
   /**
    * @dev Get balance base on chain id.
@@ -55,27 +52,27 @@ export const AppWalletProvider: FC<{ children: ReactNode }> = (props) => {
   const balance = useMemo(() => {
     if (chainId === ChainId.sol) {
       return solBalance;
-    } else if (chainId.includes("aptos")) {
-      return aptosBalance;
     } else {
       return evmBalance;
     }
-  }, [chainId, solBalance, evmBalance, aptosBalance]);
+  }, [chainId, solBalance, evmBalance]);
 
   /**
    * @dev Watch changes in solana wallet and eth wallet.
    */
   useEffect(() => {
     (async () => {
-      if (!solWallet && !ethWallet?.address && !aptosWallet?.account) {
+      // if (!solWallet && !ethWallet?.address && !aptosWallet?.account) {
+      //   setWalletAddress("");
+      //   return;
+      // }
+      if (!solWallet && !ethWallet?.address) {
         setWalletAddress("");
         return;
       }
 
       if (chainId === ChainId.sol) {
         setWalletAddress(solWallet?.publicKey?.toString() || "");
-      } else if (chainId.includes("aptos")) {
-        setWalletAddress(aptosWallet.account?.address?.toString() || "");
       } else {
         try {
           setWalletAddress(ethWallet?.address?.toString() || "");

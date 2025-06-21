@@ -11,8 +11,6 @@ import { ChainId } from "@/src/entities/platform-config.entity";
 import { SuccessTransactionModal } from "@/src/components/success-modal.component";
 import { useWhiteList } from "@/src/hooks/useWhitelist";
 import { BN } from "@project-serum/anchor";
-import { useAptosWallet } from "@/src/hooks/useAptos";
-import { convertBigNumber as convertAptosNumber } from "@/src/utils/aptos.parser";
 import { multipleBigNumber } from "@/src/utils/evm.parser";
 
 export const DepositModal: FC<{
@@ -38,10 +36,6 @@ export const DepositModal: FC<{
     nativeBalance: ethSolBalance,
     depositPocket: depositPocketEvm,
   } = useEvmWallet();
-
-  /** @dev Inject aptos program service to use. */
-  const { depositPocket: depositPocketAptos, balance: aptosBalance } =
-    useAptosWallet();
 
   /** @dev Inject whitelist provider to use. */
   const {
@@ -71,16 +65,6 @@ export const DepositModal: FC<{
       if (chainId === ChainId.sol) {
         /** @dev Execute transaction. */
         await programService.depositPocket(props.pocket, depositedAmount);
-      } else if (chainId.includes("aptos")) {
-        console.log("deposit in aptos", depositedAmount);
-        await depositPocketAptos(
-          props.pocket.id,
-          baseToken?.address,
-          convertAptosNumber(
-            depositedAmount.toNumber() / Math.pow(10, baseToken?.decimals),
-            Math.pow(10, baseToken?.realDecimals)
-          )
-        );
       } else {
         console.log("depsit in evm");
         /** @dev Execute transaction. */
@@ -138,12 +122,10 @@ export const DepositModal: FC<{
   const renderBalance = useMemo(() => {
     if (chainId === ChainId.sol) {
       return analyzeDecimals(baseBalance);
-    } else if (chainId.includes("aptos")) {
-      return analyzeDecimals(aptosBalance);
     } else {
       return analyzeDecimals(parseFloat(ethSolBalance));
     }
-  }, [chainId, solBalance, ethSolBalance, aptosBalance]);
+  }, [chainId, solBalance, ethSolBalance]);
 
   return (
     <Modal

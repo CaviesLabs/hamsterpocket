@@ -8,7 +8,6 @@ import { usePlatformConfig } from "@/src/hooks/usePlatformConfig";
 import { ChainId } from "@/src/entities/platform-config.entity";
 import { useEvmWallet } from "@/src/hooks/useEvmWallet";
 import { formatCurrency } from "@/src/utils";
-import { useAptosWallet } from "@/src/hooks/useAptos";
 
 export const DepositAmount: FC = () => {
   /**
@@ -24,7 +23,6 @@ export const DepositAmount: FC = () => {
   } = useCreatePocketPage();
 
   const { nativeBalance: evmBalance } = useEvmWallet();
-  const { balance: aptosBalance } = useAptosWallet();
   const { chainId } = usePlatformConfig();
 
   const { whiteLists, convertDecimalAmount } = useWhiteList();
@@ -37,12 +35,10 @@ export const DepositAmount: FC = () => {
   const renderBalance = useCallback(() => {
     if (chainId === ChainId.sol) {
       return convertDecimalAmount(baseToken?.address, solBalance);
-    } else if (chainId.includes("aptos")) {
-      return aptosBalance;
     } else {
       return evmBalance;
     }
-  }, [chainId, solBalance, evmBalance, aptosBalance]);
+  }, [chainId, solBalance, evmBalance]);
 
   return (
     <section>

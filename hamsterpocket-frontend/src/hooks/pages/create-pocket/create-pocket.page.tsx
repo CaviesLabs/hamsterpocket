@@ -27,7 +27,6 @@ import {
   convertBigNumber,
   multipleBigNumber,
 } from "@/src/utils/evm.parser";
-import { useAptosWallet } from "@/src/hooks/useAptos";
 import bigDecimal from "js-big-decimal";
 import { toast } from "@hamsterbox/ui-kit";
 
@@ -42,9 +41,6 @@ export const CreatePocketProvider = (props: { children: ReactNode }) => {
 
   /** @dev Inject eth function. */
   const { createPocket: createEvmPocket, signer: evmSigner } = useEvmWallet();
-
-  /** @dev Inject aptos function. */
-  const { createPocket: createAptosPocket } = useAptosWallet();
 
   /** @dev Inject functions from whitelist hook to use. */
   const { findPairLiquidity, findEntityByAddress, liquidities, whiteLists } =
@@ -342,23 +338,7 @@ export const CreatePocketProvider = (props: { children: ReactNode }) => {
           ...evmParams,
         });
         console.log(response);
-      } else {
-        /**
-         * @dev Execute creating on Aptos chain.
-         */
-        const response = await createAptosPocket(
-          whiteLists,
-          solCreatedPocketData,
-          baseTokenAddress[1],
-          targetTokenAddress[1],
-          whiteLists[baseTokenAddress[0].toBase58().toString()]?.realDecimals,
-          whiteLists[targetTokenAddress[0].toBase58().toString()]?.realDecimals,
-          depositedAmount,
-          stopLossAmount,
-          takeProfitAmount
-        );
-        console.log({ response });
-      }
+      } 
       setSuccessCreated(true);
     } catch (err: any) {
       console.warn(err);
